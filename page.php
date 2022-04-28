@@ -18,7 +18,7 @@ while(have_posts())
 
     <div class="container container--narrow page-section">
     <?php
-    $theParent = wp_get_post_parent_id(get_the_ID());
+    $theParent = wp_get_post_parent_id(get_the_ID()); // Return parent Page ID. If no parent return 0
         if($theParent)
         {
             ?>
@@ -31,14 +31,43 @@ while(have_posts())
         }      
     ?>
       
+        <?php 
+        $theArray = get_pages(array(
+          'child_of' => get_the_ID()
+        ));
+        if($theParent || $theArray)
+        {
+        // Check for page that is not a CHILD or PARENT page. Case of Normal Page  
+        //In Case of normal page child pages menu bar will not display
+        ?>
+      <div class="page-links">
+        <!-- 
+         + $theParent = 0, means curent page is the parent page
 
-      <!--<div class="page-links">
-        <h2 class="page-links__title"><a href="#">About Us</a></h2>
+         + get_the_title($theParent)
+         
+         + get_the_title(0) , current page
+        -->
+        <h2 class="page-links__title"><a href="<?php echo get_permalink($theParent);?>"><?php echo get_the_title($theParent);?></a></h2>
         <ul class="min-list">
-          <li class="current_page_item"><a href="#">Our History</a></li>
-          <li><a href="#">Our Goals</a></li>
+          <?php
+          if($theParent)
+          {          //if thge current page have parent  (menas it is the child) 
+
+            $findChildrenOf = $theParent;
+          }else{
+            $findChildrenOf = get_the_ID();
+          }
+            wp_list_pages(array(
+              'title_li' => null,
+              'child_of' => $findChildrenOf,
+              'sort_column' => 'menu_order'
+
+            ));
+          ?>
         </ul>
-      </div> -->
+      </div> 
+      <?php } ?>
 
       <div class="generic-content">
         <p>
